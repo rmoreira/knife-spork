@@ -8,6 +8,7 @@ module KnifeSpork
       def perform; end
 
       def before_bump
+        git_pre_commit
         git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         cookbooks.each do |cookbook|
@@ -112,6 +113,15 @@ module KnifeSpork
           git.add('.')
           `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
           git.commit_all "[KnifeSpork] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
+        rescue ::Git::GitExecuteError; end
+      end
+      
+      # Pre Commit changes, if any before any pull requests
+      def git_commit
+        begin
+          git.add('.')
+          `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
+          git.commit_all "[PreCommit] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
         rescue ::Git::GitExecuteError; end
       end
 
