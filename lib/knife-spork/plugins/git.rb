@@ -117,7 +117,7 @@ module KnifeSpork
       end
       
       # Pre Commit changes, if any before any pull requests
-      def git_commit
+      def git_pre_commit
         begin
           git.add('.')
           `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
