@@ -16,6 +16,7 @@ module KnifeSpork
           git_pull_submodules(cookbook.root_dir)
         end
         git_pre_commit
+        git_push
       end
 
       def before_upload
@@ -27,6 +28,7 @@ module KnifeSpork
           git_pull_submodules(cookbook.root_dir)
         end
         git_pre_commit
+        git_push
       end
 
       def before_promote
