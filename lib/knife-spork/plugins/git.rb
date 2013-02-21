@@ -119,8 +119,10 @@ module KnifeSpork
       # Pre Commit changes, if any before any pull requests
       def git_pre_commit
         begin
+          ui.msg "Pre Committing Changes before pull"
           git.add('.')
           `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
+          ui.msg "[PreCommit] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
           git.commit_all "[PreCommit] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
         rescue ::Git::GitExecuteError; end
       end
