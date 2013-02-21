@@ -26,6 +26,7 @@ module KnifeSpork
           git_pull(cookbook.root_dir)
           git_pull_submodules(cookbook.root_dir)
         end
+        git_pre_commit
       end
 
       def before_promote
@@ -43,6 +44,7 @@ module KnifeSpork
         cookbooks.each do |cookbook|
           git_add(cookbook.root_dir,"metadata.rb")
         end
+        git_commit
       end
 
       def after_promote_local
@@ -50,6 +52,7 @@ module KnifeSpork
         environments.each do |environment|
           git_add(environment_path,"#{environment}.json")
         end
+        git_commit
       end
 
       private
