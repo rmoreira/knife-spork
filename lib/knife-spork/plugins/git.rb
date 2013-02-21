@@ -8,6 +8,7 @@ module KnifeSpork
       def perform; end
 
       def before_bump
+        ui.msg "Before Bump"
         git_pre_commit
         git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
@@ -18,6 +19,7 @@ module KnifeSpork
       end
 
       def before_upload
+        ui.msg "Before Upload"
         git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         cookbooks.each do |cookbook|
@@ -27,6 +29,7 @@ module KnifeSpork
       end
 
       def before_promote
+        ui.msg "Before Promote"
         cookbooks.each do |cookbook|
           git_pull(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
           git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
@@ -36,12 +39,14 @@ module KnifeSpork
       end
 
       def after_bump
+        ui.msg "After Bump"
         cookbooks.each do |cookbook|
           git_add(cookbook.root_dir,"metadata.rb")
         end
       end
 
       def after_promote_local
+        ui.msg "After Promote Local"
         environments.each do |environment|
           git_add(environment_path,"#{environment}.json")
         end
@@ -65,6 +70,7 @@ module KnifeSpork
       #   - Pull from the remote
       #   - Pop the stash
       def git_pull(path)
+        ui.msg "Git Pull #{path}"
         if is_repo?(path)
           ui.msg "Git: Pulling latest changes from #{path}"
           output = IO.popen("git pull 2>&1")
@@ -95,6 +101,7 @@ module KnifeSpork
       end
       
       def git_add(filepath,filename)
+        ui.msg "Git Add #{filename}"
         if is_repo?(filepath)
           ui.msg "Git add'ing #{filepath}/#{filename}"
           output = IO.popen("cd #{filepath} && git add #{filename}")
@@ -110,6 +117,7 @@ module KnifeSpork
       # Commit changes, if any
       def git_commit
         begin
+          ui.msg "Committing Changes"
           git.add('.')
           `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
           git.commit_all "[KnifeSpork] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
@@ -129,6 +137,7 @@ module KnifeSpork
 
       def git_push(tags = false)
         begin
+        ui.msg "Git Push"
           git.push remote, branch, tags
         rescue ::Git::GitExecuteError => e
           ui.error "Could not push to remote #{remote}/#{branch}. Does it exist?"
@@ -181,10 +190,12 @@ module KnifeSpork
       end
 
       def remote
+        ui.msg "#{config.remote}"
         config.remote || 'origin'
       end
 
       def branch
+        ui.msg "#{config.branch}"
         config.branch || 'master'
       end
 
