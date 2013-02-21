@@ -47,6 +47,7 @@ module KnifeSpork
           git_add(cookbook.root_dir,"metadata.rb")
         end
         git_commit
+        git_push
       end
 
       def after_promote_local
@@ -55,6 +56,7 @@ module KnifeSpork
           git_add(environment_path,"#{environment}.json")
         end
         git_commit
+        git_push
       end
 
       private
