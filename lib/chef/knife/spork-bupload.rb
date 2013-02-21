@@ -43,10 +43,10 @@ module KnifeSpork
       
       #First, Bump!
       bump = KnifeSpork::SporkBump.new #attempt to bump
-      bump.name_args = @name_args rescue ui.msg "Error!!!"
+      bump.name_args = @name_args rescue ui.msg("Error!!!")
       bump.run
       ui.msg @name_args
-      ui.msg bump.name_args rescue ui.msg "Error!!!"
+      ui.msg bump.name_args rescue ui.msg("Error!!!")
 
       #First load so plugins etc know what to work with
       @cookbooks = load_cookbooks(name_args)
