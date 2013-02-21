@@ -42,6 +42,7 @@ module KnifeSpork
       end
       
       #First, Bump!
+      bump = KnifeSpork::SporkBump.new #attempt to bump
       bump.name_args = @name_args
       bump.run
       bupload
@@ -57,7 +58,6 @@ module KnifeSpork
       #Reload cookbook in case a VCS plugin found updates
       @cookbooks = load_cookbooks(name_args)
       include_dependencies if config[:depends]
-      bump = KnifeSpork::SporkBump.new #attempt to bump
       run_plugins(:after_upload)
     end
 
