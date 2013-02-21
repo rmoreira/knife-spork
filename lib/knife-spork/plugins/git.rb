@@ -54,10 +54,8 @@ module KnifeSpork
         cookbooks.each do |cookbook|
           git_add(cookbook.root_dir,"metadata.rb")
         end
-        if commit
-          git_commit
-          git_push
-        end
+        git_commit
+        git_push
       end
 
       def after_promote_local
