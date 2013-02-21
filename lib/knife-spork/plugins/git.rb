@@ -15,12 +15,20 @@ module KnifeSpork
           git_pull(cookbook.root_dir)
           git_pull_submodules(cookbook.root_dir)
         end
-        git_pre_commit
-        git_push
       end
 
       def before_upload
         ui.msg "Before Upload"
+        git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
+        git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
+        cookbooks.each do |cookbook|
+          git_pull(cookbook.root_dir)
+          git_pull_submodules(cookbook.root_dir)
+        end
+      end
+
+      def before_pupload
+        ui.msg "Before Bupload"
         git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         cookbooks.each do |cookbook|
@@ -46,8 +54,6 @@ module KnifeSpork
         cookbooks.each do |cookbook|
           git_add(cookbook.root_dir,"metadata.rb")
         end
-        git_commit
-        git_push
       end
 
       def after_promote_local
@@ -55,8 +61,6 @@ module KnifeSpork
         environments.each do |environment|
           git_add(environment_path,"#{environment}.json")
         end
-        git_commit
-        git_push
       end
 
       private
