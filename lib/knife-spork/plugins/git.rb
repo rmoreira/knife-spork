@@ -9,13 +9,13 @@ module KnifeSpork
 
       def before_bump
         ui.msg "Before Bump"
-        git_pre_commit
         git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
         cookbooks.each do |cookbook|
           git_pull(cookbook.root_dir)
           git_pull_submodules(cookbook.root_dir)
         end
+        git_pre_commit
       end
 
       def before_upload
