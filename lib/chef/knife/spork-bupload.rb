@@ -47,6 +47,8 @@ module KnifeSpork
       bump.run
       ui.msg @name_args
       ui.msg bump.name_args rescue ui.msg("Error!!!")
+      run_plugins(:git_commit)
+      run_plugins(:git_push)
 
       #First load so plugins etc know what to work with
       @cookbooks = load_cookbooks(name_args)

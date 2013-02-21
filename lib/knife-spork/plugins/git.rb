@@ -49,10 +49,14 @@ module KnifeSpork
         end
       end
 
-      def after_bump
+      def after_bump(commit = false)
         ui.msg "After Bump"
         cookbooks.each do |cookbook|
           git_add(cookbook.root_dir,"metadata.rb")
+        end
+        if commit
+          git_commit
+          git_push
         end
       end
 
