@@ -40,6 +40,13 @@ module KnifeSpork
         ui.error("You must specify the --all flag or at least one cookbook name")
         exit 1
       end
+      
+      #First, Bump!
+      bump.name_args = @name_args
+      bump.run
+      bupload
+      puts @name_args
+      puts bump.name_args
 
       #First load so plugins etc know what to work with
       @cookbooks = load_cookbooks(name_args)
@@ -51,9 +58,6 @@ module KnifeSpork
       @cookbooks = load_cookbooks(name_args)
       include_dependencies if config[:depends]
       bump = KnifeSpork::SporkBump.new #attempt to bump
-      bump.name_args = @name_args
-      bump.run
-      bupload
       run_plugins(:after_upload)
     end
 
