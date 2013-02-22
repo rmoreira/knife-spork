@@ -62,7 +62,7 @@ module KnifeSpork
         ui.msg "After Promote Local"
         ui.msg "environment_path : #{environment_path}"
         environments.each do |environment|
-          git_add(environment_path,"#{environment}.json")
+          git_add(environment_path,"#{environment}.json") rescue ui.msg "Gotta error with git"
         end
       end
 
