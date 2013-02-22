@@ -61,9 +61,13 @@ module KnifeSpork
       def after_promote_local
         ui.msg "After Promote Local"
         ui.msg "environment_path : #{environment_path}"
-        environments.each do |environment|
-          git_add(environment_path,"#{environment}.json") rescue ui.msg "Gotta error with git"
-        end
+        begin
+          environments.each do |environment|
+            git_add(environment_path,"#{environment}.json") 
+          end
+        rescue
+          ui.msg "Gotta error with git"
+
       end
 
       private
