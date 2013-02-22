@@ -67,6 +67,7 @@ module KnifeSpork
           end
         rescue
           ui.msg "Gotta error with git"
+        end
 
       end
 
