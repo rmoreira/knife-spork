@@ -39,6 +39,7 @@ module KnifeSpork
         ui.error("You must specify the cookbook and environment to promote to")
         exit 1
       end
+      ui.info("Promote name_args : #{@name_args}")
 
       #First load so plugins etc know what to work with
       @environments, @cookbook = load_environments_and_cookbook
