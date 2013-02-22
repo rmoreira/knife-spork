@@ -1,5 +1,4 @@
 require 'chef/knife'
-require 'chef/knife/spork-bupload'
 require 'chef/exceptions'
 require 'chef/cookbook_loader'
 require 'chef/cookbook_uploader'
@@ -9,9 +8,6 @@ require 'socket'
 module KnifeSpork
   class SporkBupload < Chef::Knife
     include KnifeSpork::Runner
-
-    CHECKSUM = 'checksum'
-    MATCH_CHECKSUM = /[0-9a-f]{32,}/
 
     banner 'knife spork bupload [COOKBOOKS...] (options)'
 
