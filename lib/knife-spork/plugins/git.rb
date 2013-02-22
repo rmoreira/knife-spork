@@ -118,7 +118,7 @@ module KnifeSpork
         ui.msg "Git Add #{filename}"
         if is_repo?(filepath)
           ui.msg "Git add'ing #{filepath}/#{filename}"
-          output = IO.popen("cd #{filepath};  git add #{filepath}/#{filename}")
+          output = IO.popen("cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename}")
           Process.wait
           exit_code = $?
           ui.msg "Exit status: #{exit_code.exitstatus}"
