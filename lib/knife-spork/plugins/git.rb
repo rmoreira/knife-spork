@@ -47,8 +47,6 @@ module KnifeSpork
           git_pull(cookbook.root_dir)
           #git_pull_submodules(cookbook.root_dir)
         end
-        git_pre_commit
-        git_push
       end
 
       def after_bump(commit = false)
