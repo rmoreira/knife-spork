@@ -43,9 +43,9 @@ module KnifeSpork
         ui.msg "Before Promote"
         cookbooks.each do |cookbook|
           git_pull(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
-          git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
+          #git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
           git_pull(cookbook.root_dir)
-          git_pull_submodules(cookbook.root_dir)
+          #git_pull_submodules(cookbook.root_dir)
         end
       end
 
