@@ -61,14 +61,9 @@ module KnifeSpork
       def after_promote_local
         ui.msg "After Promote Local"
         ui.msg "environment_path : #{environment_path}"
-        begin
-          environments.each do |environment|
-            git_add(environment_path,"#{environment}.json") 
-          end
-        rescue
-          ui.msg "Gotta error with git"
+        environments.each do |environment|
+          git_add(environment_path,"#{environment}.json") 
         end
-
       end
 
       private
@@ -123,8 +118,9 @@ module KnifeSpork
         ui.msg "Git Add #{filename}"
         if is_repo?(filepath)
           ui.msg "Git add'ing #{filepath}/#{filename}"
-          output = IO.popen("cd #{filepath} && git add #{filename}")
+          output = IO.popen("cd #{filepath} && git add #{filepath}/#{filename}")
           Process.wait
+          ui.msg "Git add ... result : #{output.read()}"
           exit_code = $?
           if !exit_code.exitstatus ==  0
               ui.error "#{output.read()}\n"
