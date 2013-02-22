@@ -120,8 +120,8 @@ module KnifeSpork
           ui.msg "Git add'ing #{filepath}/#{filename}"
           output = IO.popen("cd #{filepath};  git add #{filepath}/#{filename}")
           Process.wait
-          ui.msg "Exit status: #{exit_code.exitstatus}"
           exit_code = $?
+          ui.msg "Exit status: #{exit_code.exitstatus}"
           if !exit_code.exitstatus ==  0
               ui.error "#{output.read()}\n"
               exit 1
