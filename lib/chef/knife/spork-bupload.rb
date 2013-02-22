@@ -45,8 +45,6 @@ module KnifeSpork
       bump = KnifeSpork::SporkBump.new #attempt to bump
       bump.name_args = @name_args rescue ui.msg("Error!!!")
       bump.run
-      ui.msg @name_args
-      ui.msg bump.name_args rescue ui.msg("Error!!!")
       run_plugins(:git_commit)
       run_plugins(:git_push)
 
@@ -55,7 +53,7 @@ module KnifeSpork
       include_dependencies if config[:depends]
 
       run_plugins(:before_bupload)
-
+      bupload
       #Reload cookbook in case a VCS plugin found updates
       @cookbooks = load_cookbooks(name_args)
       include_dependencies if config[:depends]
