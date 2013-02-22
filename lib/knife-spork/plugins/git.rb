@@ -43,9 +43,9 @@ module KnifeSpork
         ui.msg "Before Promote"
         cookbooks.each do |cookbook|
           git_pull(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
-          #git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
+          git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
           git_pull(cookbook.root_dir)
-          #git_pull_submodules(cookbook.root_dir)
+          git_pull_submodules(cookbook.root_dir)
         end
       end
 
@@ -118,7 +118,7 @@ module KnifeSpork
         ui.msg "Git Add #{filename}"
         if is_repo?(filepath)
           ui.msg "Git add'ing #{filepath}/#{filename}"
-          output = system("cd #{filepath};  git add #{filepath}/#{filename}")
+          output = IO.popen("cd #{filepath};  git add #{filepath}/#{filename}")
           Process.wait
           ui.msg "Git add ... result : #{output.read()}"
           exit_code = $?
