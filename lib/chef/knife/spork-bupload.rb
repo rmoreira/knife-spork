@@ -55,6 +55,11 @@ module KnifeSpork
       @cookbooks = load_cookbooks(name_args)
       include_dependencies if config[:depends]
       run_plugins(:after_upload)
+      
+      #Lastly, Promote to default environment!
+      promote = KnifeSpork::SporkPromote.new #attempt to bump
+      promote.name_args = @name_args rescue ui.msg("Error!!!")
+      promote.run
     end
 
     private
