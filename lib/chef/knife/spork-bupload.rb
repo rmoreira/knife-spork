@@ -55,7 +55,7 @@ module KnifeSpork
     end
 
     def bupload(cookbook)
-      IO.popen("bash", "rw+") do |pipe|
+      IO.popen("bash", "w+") do |pipe|
         pipe.puts("knife spork bump #{cookbook}")
         pipe.puts("knife spork upload #{cookbook}")
         pipe.puts("knife spork promote #{cookbook}")
