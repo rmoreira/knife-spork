@@ -55,14 +55,17 @@ module KnifeSpork
     end
 
     def bupload(cookbook)
-      IO.popen("bash", "w+") do |pipe|
-        pipe.puts("knife spork bump #{cookbook}")
-        pipe.puts("knife spork upload #{cookbook}")
-        pipe.puts("knife spork promote #{cookbook}")
-        pipe.close_write
-        output = pipe.read
-      end
-      ui.msg "Output: #{output}"
+      pipe = IO.popen("bash -c 'knife spork bump #{cookbook}'")
+      ui.info(pipe.readlines)
+      pipe.close
+
+      pipe = IO.popen("bash -c 'knife spork upload #{cookbook}'")
+      ui.info(pipe.readlines)
+      pipe.close
+
+      pipe = IO.popen("bash -c 'knife spork promote #{cookbook}'")
+      ui.info(pipe.readlines)
+      pipe.close
     end
 
     # Ensures that all the cookbooks dependencies are either already on the server or being uploaded in this pass
