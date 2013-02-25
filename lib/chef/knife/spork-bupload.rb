@@ -126,12 +126,12 @@ module KnifeSpork
     
     def promote(cookbook)
       ui.msg "Trying to promote: knife spork promote #{cookbook} "
-      output = ""
-      IO.popen("bash", "r+") do |pipe|
-        pipe.puts("knife spork promote #{cookbook}")
-        pipe.close_write
-        output = pipe.read
-      end
+      output = `knife spork promote #{cookbook}`
+      #IO.popen("bash", "r+") do |pipe|
+      #  pipe.puts("knife spork promote #{cookbook}")
+      #  pipe.close_write
+      #  output = pipe.read
+      # end
       ui.msg "Output: #{output}"
     end
   end
