@@ -57,7 +57,7 @@ module KnifeSpork
       run_plugins(:after_upload)
       
       #Lastly, Promote to default environment!
-      @cookbooks.eacho do |cookbook|
+      @cookbooks.each do |cookbook|
         promote(cookbook)
       end
     end
