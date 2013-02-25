@@ -9,7 +9,7 @@ module KnifeSpork
   class SporkBupload < Chef::Knife
     include KnifeSpork::Runner
 
-    banner 'knife spork bupload [COOKBOOKS...] (options)'
+    banner 'knife spork bupload COOKBOOK (options)'
 
     option :cookbook_path,
       :short => '-o PATH:PATH',
@@ -34,7 +34,7 @@ module KnifeSpork
 
       if @name_args.empty?
         show_usage
-        ui.error("You must specify the --all flag or at least one cookbook name")
+        ui.error("You must specify the at least one cookbook name")
         exit 1
       end
       
@@ -46,54 +46,17 @@ module KnifeSpork
     end
 
     private
-    def include_dependencies
-      @cookbooks.each do |cookbook|
-        @cookbooks.concat(load_cookbooks(cookbook.metadata.dependencies.keys))
-      end
-
-      @cookbooks.uniq!
-    end
 
     def bupload(cookbook)
-      pipe = IO.popen("bash -c 'knife spork bump #{cookbook}'")
-      ui.info(pipe.readlines)
-      pipe.close
-
-      pipe = IO.popen("bash -c 'knife spork upload #{cookbook}'")
-      ui.info(pipe.readlines)
-      pipe.close
-
-      pipe = IO.popen("bash -c 'knife spork promote #{cookbook}'")
-      ui.info(pipe.readlines)
-      pipe.close
+      [ "bash -c 'knife spork bump #{cookbook}'",
+        "bash -c 'knife spork upload #{cookbook}'",
+        "bash -c 'knife spork promote #{cookbook}'"
+      ].each do |cmd|
+          pipe = IO.popen(cmd)
+          ui.info(pipe.readlines)
+          pipe.close
+        end 
     end
 
-    # Ensures that all the cookbooks dependencies are either already on the server or being uploaded in this pass
-    def check_dependencies(cookbook)
-      cookbook.metadata.dependencies.each do |cookbook_name, version|
-        unless server_side_cookbooks(cookbook_name, version)
-          ui.error "#{cookbook.name} depends on #{cookbook_name} (#{version}), which is not currently being uploaded and cannot be found on the server!"
-          exit(1)
-        end
-      end
-    end
-
-    def server_side_cookbooks(cookbook_name, version)
-      if Chef::CookbookVersion.respond_to?(:list_all_versions)
-        @server_side_cookbooks ||= Chef::CookbookVersion.list_all_versions
-      else
-        @server_side_cookbooks ||= Chef::CookbookVersion.list
-      end
-
-      hash = @server_side_cookbooks[cookbook_name]
-      hash && hash['versions'] && hash['versions'].any?{ |v| Chef::VersionConstraint.new(version).include?(v['version']) }
-    end
-    
-    def promote(cookbook)
-      ui.msg "Trying to promote: knife spork promote #{cookbook} "
-      #output = `pwd && ls -ltr`
-      output = system("bash -c 'knife spork promote sporktest'")
-      ui.msg "Output: #{output}"
-    end
   end
 end
