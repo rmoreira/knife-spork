@@ -47,14 +47,17 @@ module KnifeSpork
     private
 
     def bupload(cookbook)
-      [ "bash -c 'knife spork bump #{cookbook}'",
-        "bash -c 'knife spork upload #{cookbook}'",
-        "bash -c 'knife spork promote #{cookbook} --remote'"
-      ].each do |cmd|
-          pipe = IO.popen(cmd)
-          ui.info(pipe.readlines)
-          pipe.close
-        end 
+      begin
+        [ "bash -c 'knife spork bump #{cookbook}'",
+          "bash -c 'knife spork upload #{cookbook}'",
+          "bash -c 'knife spork promote #{cookbook} --remote'"
+        ].each do |cmd|
+            pipe = IO.popen(cmd)
+            ui.info(pipe.readlines)
+            pipe.close
+          end
+      rescue
+        ui.error
     end
 
   end

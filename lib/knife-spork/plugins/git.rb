@@ -185,12 +185,10 @@ module KnifeSpork
       end
 
       def remote
-        ui.msg "#{config.remote}"
         config.remote || 'origin'
       end
 
       def branch
-        ui.msg "#{config.branch}"
         config.branch || 'master'
       end
 
