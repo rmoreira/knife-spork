@@ -49,7 +49,7 @@ module KnifeSpork
     def bupload(cookbook)
       [ "bash -c 'knife spork bump #{cookbook}'",
         "bash -c 'knife spork upload #{cookbook}'",
-        "bash -c 'knife spork promote #{cookbook}'"
+        "bash -c 'knife spork promote #{cookbook} --remote'"
       ].each do |cmd|
           pipe = IO.popen(cmd)
           ui.info(pipe.readlines)
