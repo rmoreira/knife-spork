@@ -4,17 +4,23 @@ KnifeSpork is a workflow plugin for `Chef::Knife` which helps multiple developer
 
 Installation
 ------------
-### Gem Install (recommended)
+### Gem Install (recommended for personalized version of knife-spork)
 `knife-spork` is available on rubygems. Add the following to your `Gemfile`:
 
 ```ruby
-gem 'knife-spork'
+gem 'knife-spork', :git => "git@github.com:rmoreira/knife-spork.git"
 ```
 
-or install the gem manually:
+and run bundle update to get lastest code:
 
 ```bash
-gem install knife-spork
+bundle update
+```
+
+or run bundle install:
+
+```bash
+bundle install
 ```
 
 ### Plugin Install
