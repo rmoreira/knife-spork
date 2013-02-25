@@ -74,7 +74,6 @@ module KnifeSpork
         end
       end
       run_plugins(:after_promote_local)
-      ui.msg "Done promoting"
       if config[:remote]
         run_plugins(:after_promote_remote)
       end
