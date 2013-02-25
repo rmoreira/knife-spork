@@ -121,9 +121,7 @@ module KnifeSpork
           #output = IO.popen("cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename}")
           shell_output = ""
           IO.popen('bash', 'r+') do |pipe|
-            pipe.puts("cd #{filepath}")
-            pipe.puts("pwd")
-            pipe.puts("git add #{filename}")
+            pipe.puts("ls #{filepath} && cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename} && pwd && git status")
             pipe.close_write
             shell_output = pipe.read
           end
