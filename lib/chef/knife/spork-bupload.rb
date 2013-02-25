@@ -127,7 +127,7 @@ module KnifeSpork
     end
     
     def promote(cookbook)
-      ui.msg "Trying to promote"
+      ui.msg "Trying to promote: knife spork promote #{cookbook} "
       output = IO.popen("knife spork promote #{cookbook}")
       Process.wait
       exit_code = $?
