@@ -57,9 +57,9 @@ module KnifeSpork
       run_plugins(:after_upload)
       
       #Lastly, Promote to default environment!
-      promote = KnifeSpork::SporkPromote.new #attempt to bump
-      promote.name_args = @name_args rescue ui.msg("Error!!!")
-      promote.run
+      @cookbooks.eacho do |cookbook|
+        promote(cookbook)
+      end
     end
 
     private
@@ -124,6 +124,18 @@ module KnifeSpork
 
       hash = @server_side_cookbooks[cookbook_name]
       hash && hash['versions'] && hash['versions'].any?{ |v| Chef::VersionConstraint.new(version).include?(v['version']) }
+    end
+    
+    def promote(cookbook)
+      ui.msg "Trying to promote"
+      output = IO.popen("knife spork promote #{cookbook}")
+      Process.wait
+      exit_code = $?
+      ui.msg "Exit status: #{exit_code.exitstatus}"
+      if !exit_code.exitstatus ==  0
+          ui.error "#{output.read()}\n"
+          exit 1
+      end
     end
   end
 end

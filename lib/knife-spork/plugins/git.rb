@@ -43,9 +43,9 @@ module KnifeSpork
         ui.msg "Before Promote"
         cookbooks.each do |cookbook|
           git_pull(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
-          #git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
+          git_pull_submodules(environment_path) unless cookbook.root_dir.include?(environment_path.gsub"/environments","")
           git_pull(cookbook.root_dir)
-          #git_pull_submodules(cookbook.root_dir)
+          git_pull_submodules(cookbook.root_dir)
         end
       end
 
@@ -60,9 +60,8 @@ module KnifeSpork
 
       def after_promote_local
         ui.msg "After Promote Local"
-        ui.msg "environment_path : #{environment_path}"
         environments.each do |environment|
-          git_add(environment_path,"#{environment}.json") 
+          git_add(environment_path,"#{environment}.json")
         end
       end
 
@@ -118,17 +117,9 @@ module KnifeSpork
         ui.msg "Git Add #{filename}"
         if is_repo?(filepath)
           ui.msg "Git add'ing #{filepath}/#{filename}"
-          #output = IO.popen("cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename}")
-          shell_output = ""
-          IO.popen('bash', 'r+') do |pipe|
-            pipe.puts("ls #{filepath} && cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename} && pwd && git status")
-            pipe.close_write
-            shell_output = pipe.read
-          end
-          ui.msg "Shell output: #{shell_output}"
+          output = IO.popen("cd #{filepath} && git add #{filename}")
           Process.wait
           exit_code = $?
-          ui.msg "Exit status: #{exit_code.exitstatus}"
           if !exit_code.exitstatus ==  0
               ui.error "#{output.read()}\n"
               exit 1
