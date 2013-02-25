@@ -258,3 +258,17 @@ Adding version constraint apache2 = 2.0.2
 Saving changes to my_environment.json
 Promotion complete. Don't forget to upload your changed my_environment to Chef Server
 ```
+
+Spork Bupload
+------------
+This function combines bump, upload, and promote --remote all in one.
+
+#### Usage
+```bash
+knife spork bupload COOKBOOK
+```
+#### Example
+```text
+$ knife spork bupload apache2
+```
+
