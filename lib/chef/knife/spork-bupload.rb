@@ -127,7 +127,7 @@ module KnifeSpork
     def promote(cookbook)
       ui.msg "Trying to promote: knife spork promote #{cookbook} "
       #output = `pwd && ls -ltr`
-      output = system("knife spork promote sporktest")
+      output = system("bash -c 'knife spork promote sporktest'")
       #IO.popen("bash", "r+") do |pipe|
       #  pipe.puts("knife spork promote #{cookbook}")
       #  pipe.close_write
