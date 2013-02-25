@@ -126,14 +126,13 @@ module KnifeSpork
     
     def promote(cookbook)
       ui.msg "Trying to promote: knife spork promote #{cookbook} "
-      output = IO.popen("knife spork promote #{cookbook}")
-      Process.wait
-      exit_code = $?
-      ui.msg "Exit status: #{exit_code.exitstatus}"
-      if !exit_code.exitstatus ==  0
-          ui.error "#{output.read()}\n"
-          exit 1
+      output = ""
+      IO.popen("bash", "r+") do |pipe|
+        pipe.puts("knife spork promote #{cookbook}")
+        pipe.close_write
+        output = pipe.read
       end
+      ui.msg "Output: #{output}"
     end
   end
 end
