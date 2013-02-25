@@ -27,18 +27,6 @@ module KnifeSpork
         end
       end
 
-      def before_pupload
-        ui.msg "Before Bupload"
-        git_pull(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
-        git_pull_submodules(environment_path) unless cookbook_path.include?(environment_path.gsub"/environments","")
-        cookbooks.each do |cookbook|
-          git_pull(cookbook.root_dir)
-          git_pull_submodules(cookbook.root_dir)
-        end
-        git_pre_commit
-        git_push
-      end
-
       def before_promote
         ui.msg "Before Promote"
         cookbooks.each do |cookbook|
@@ -137,17 +125,6 @@ module KnifeSpork
         rescue ::Git::GitExecuteError; end
       end
       
-      # Pre Commit changes, if any before any pull requests
-      def git_pre_commit
-        begin
-          ui.msg "Pre Committing Changes before pull"
-          git.add('.')
-          `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
-          ui.msg "[PreCommit] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
-          git.commit_all "[PreCommit] Bumping cookbooks:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
-        rescue ::Git::GitExecuteError; end
-      end
-
       def git_push(tags = false)
         begin
         ui.msg "Git Push"

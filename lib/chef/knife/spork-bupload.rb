@@ -30,7 +30,6 @@ module KnifeSpork
     def run
       self.config = Chef::Config.merge!(config)
       config[:cookbook_path] ||= Chef::Config[:cookbook_path]
-      ui.info "Config looks like : #{config}"
 
       if @name_args.empty?
         show_usage
