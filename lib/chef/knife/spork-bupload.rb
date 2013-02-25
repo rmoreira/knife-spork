@@ -38,26 +38,11 @@ module KnifeSpork
         exit 1
       end
       
-      #First, Bump!
-      bump = KnifeSpork::SporkBump.new #attempt to bump
-      bump.name_args = @name_args rescue ui.msg("Error!!!")
-      bump.run
+      run_plugins(:git_add)
       run_plugins(:git_commit)
-      run_plugins(:git_push)
 
-      #First load so plugins etc know what to work with
-      @cookbooks = load_cookbooks(name_args)
-      include_dependencies if config[:depends]
+      bupload(@name_args.first)
 
-      run_plugins(:before_bupload)
-      bupload
-      #Reload cookbook in case a VCS plugin found updates
-      @cookbooks = load_cookbooks(name_args)
-      include_dependencies if config[:depends]
-      run_plugins(:after_upload)
-      
-      #Lastly, Promote to default environment!
-      promote(name_args.first)
     end
 
     private
@@ -69,38 +54,14 @@ module KnifeSpork
       @cookbooks.uniq!
     end
 
-    def bupload
-      # upload cookbooks in reverse so that dependencies are satisfied first
-      @cookbooks.reverse.each do |cookbook|
-        begin
-          check_dependencies(cookbook)
-          if name_args.include?(cookbook.name.to_s)
-            uploader = Chef::CookbookUploader.new(cookbook, ::Chef::Config.cookbook_path)
-            if uploader.respond_to?(:upload_cookbooks)
-              # Chef >= 10.14.0
-              uploader.upload_cookbooks
-              ui.info "Freezing #{cookbook.name} at #{cookbook.version}..."
-              cookbook.freeze_version
-              uploader.upload_cookbooks
-            else
-              uploader.upload_cookbook
-              ui.info "Freezing #{cookbook.name} at #{cookbook.version}..."
-              cookbook.freeze_version
-              uploader.upload_cookbook
-
-            end
-          end
-        rescue Net::HTTPServerException => e
-          if e.response.code == '409'
-            ui.error "#{cookbook.name}@#{cookbook.version} is frozen. Please bump your version number before continuing!"
-            exit(1)
-          else
-            raise
-          end
-        end
+    def bupload(cookbook)
+      IO.popen("bash", "rw+") do |pipe|
+        pipe.puts("knife spork bump #{cookbook}")
+        pipe.puts("knife spork upload #{cookbook}")
+        pipe.puts("knife spork promote #{cookbook}")
+        pipe.close_write
+        output = pipe.read
       end
-
-      ui.msg "Successfully uploaded #{@cookbooks.collect{|c| "#{c.name}@#{c.version}"}.join(', ')}!"
     end
 
     # Ensures that all the cookbooks dependencies are either already on the server or being uploaded in this pass
@@ -128,11 +89,6 @@ module KnifeSpork
       ui.msg "Trying to promote: knife spork promote #{cookbook} "
       #output = `pwd && ls -ltr`
       output = system("bash -c 'knife spork promote sporktest'")
-      #IO.popen("bash", "r+") do |pipe|
-      #  pipe.puts("knife spork promote #{cookbook}")
-      #  pipe.close_write
-      #  output = pipe.read
-      # end
       ui.msg "Output: #{output}"
     end
   end
