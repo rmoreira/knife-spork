@@ -56,8 +56,9 @@ module KnifeSpork
             ui.info(pipe.readlines)
             pipe.close
           end
-      rescue
-        ui.error
+      rescue StandardError => e 
+        ui.error(e.inspect)
+      end
     end
 
   end
