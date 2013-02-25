@@ -118,7 +118,16 @@ module KnifeSpork
         ui.msg "Git Add #{filename}"
         if is_repo?(filepath)
           ui.msg "Git add'ing #{filepath}/#{filename}"
-          output = IO.popen("cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename}")
+          #output = IO.popen("cd #{filepath} && git rev-parse --show-toplevel && git add #{filepath}/#{filename}")
+          shell_output = ""
+          IO.popen('bash', 'r+') do |pipe|
+            pipe.puts("cd #{filepath}")
+            pipe.puts("pwd")
+            pipe.puts("git add #{filename}")
+            pipe.close_write
+            shell_output = pipe.read
+          end
+          ui.msg "Shell output: #{shell_output}"
           Process.wait
           exit_code = $?
           ui.msg "Exit status: #{exit_code.exitstatus}"
