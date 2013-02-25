@@ -62,7 +62,7 @@ module KnifeSpork
         pipe.close_write
         output = pipe.read
       end
-      ui.msg output
+      ui.msg "Output: #{output}"
     end
 
     # Ensures that all the cookbooks dependencies are either already on the server or being uploaded in this pass
