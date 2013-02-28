@@ -37,7 +37,7 @@ module KnifeSpork
         exit 1
       end
       
-      ui.msg "Adding and committing changes to git repo"
+      ui.msg "\nAdding and committing changes to git repo"
       ui.msg "-----------------------------------------"
       run_plugins(:git_add)
       run_plugins(:git_commit)
