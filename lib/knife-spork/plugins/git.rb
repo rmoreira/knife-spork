@@ -119,15 +119,9 @@ module KnifeSpork
       def git_commit
         begin
           ui.msg "Committing Changes"
-          ui.msg "\nEnter commit message or just press [Enter]: "
-          message = gets.chomp
           git.add('.')
           `git ls-files --deleted`.chomp.split("\n").each{ |f| git.remove(f) }
-          if message.empty?
-            git.commit_all "[KnifeSpork] Updated cookbook:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
-          else
-            git.commit_all message
-          end
+          git.commit_all "[KnifeSpork] Updated cookbook:\n#{cookbooks.collect{|c| "  #{c.name}@#{c.version}"}.join("\n")}"
         rescue ::Git::GitExecuteError; end
       end
       
