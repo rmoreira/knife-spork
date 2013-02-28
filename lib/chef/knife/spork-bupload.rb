@@ -37,6 +37,8 @@ module KnifeSpork
         exit 1
       end
       
+      ui.msg "Adding and committing changes to git repo"
+      ui.msg "-----------------------------------------"
       run_plugins(:git_add)
       run_plugins(:git_commit)
 
@@ -52,9 +54,11 @@ module KnifeSpork
           "bash -c 'knife spork upload #{cookbook}'",
           "bash -c 'knife spork promote #{cookbook} --remote'"
         ].each do |cmd|
+            ui.msg "\n## Begin: #{cmd} ##"
             pipe = IO.popen(cmd)
             ui.info(pipe.readlines)
             pipe.close
+            ui.msg "\n## End: #{cmd} ##\n"
           end
       rescue StandardError => e 
         ui.error(e.inspect)
